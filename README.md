@@ -17,7 +17,7 @@ The primary goal of this project is to create a centralized digital library wher
 
 ## 🌐 Live URL
 
-**[Visit the Live Application](https://test-982fe.web.app)**
+**[Visit the Live Application](https://booklibrary-5b3e5.web.app/)**
 
 ---
 
