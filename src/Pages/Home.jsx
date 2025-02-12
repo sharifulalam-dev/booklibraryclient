@@ -68,7 +68,7 @@ const HomePage = () => {
                     to="/"
                     className="text-3xl md:text-7xl font-bold text-[#444] md:leading-[1.3]"
                   >
-                    Fuel, <span className="text-[#f39c12]">Minds</span>
+                    Run, <span className="text-[#f39c12]">Minds</span>
                     <br />
                     Ignite<span className="text-[#f39c12]"> Creativity</span>
                     <br />
