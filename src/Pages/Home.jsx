@@ -153,7 +153,6 @@ const HomePage = () => {
         </Swiper>
       </div>
 
-      {/* ----------------- Choose Your Book Section ----------------- */}
       <div className="bg-[#f8f8f8] py-24">
         <h1 className="text-center text-4xl font-semibold mb-12 text-gray-800">
           Choose Your Book!
