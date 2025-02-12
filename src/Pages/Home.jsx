@@ -137,7 +137,7 @@ const HomePage = () => {
                     Open Your <span className="text-[#f39c12]"> World</span>
                     <br />
                     <Typewriter
-                      words={["Where Story Starts!"]}
+                      words={["Where Story Starts !"]}
                       loop={false}
                       cursor
                       cursorStyle="|"
