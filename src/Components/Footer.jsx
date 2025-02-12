@@ -9,8 +9,9 @@ const Footer = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Book Library</h1>
           <p className="mt-2 text-sm">
-            A book library is a gateway to endless worlds, where knowledge and
-            imagination converge to empower minds and inspire dreams.
+            A book library is a gateway to endless worlds,
+            <br /> where knowledge and imagination converge to
+            <br /> empower minds and inspire dreams.
           </p>
         </div>
         {/* Contact Us */}
