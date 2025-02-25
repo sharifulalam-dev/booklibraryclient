@@ -9,9 +9,6 @@ import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 const HomePage = () => {
-  // In case you need to load data for other sections
-
-  // Dummy data for Featured Books using images from placehold.cc
   const FeaturedBooks = [
     {
       id: 1,
@@ -25,7 +22,7 @@ const HomePage = () => {
       title: "Sapiens",
       author: "Yuval Noah Harari",
       image: "https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg",
-      categroy: "Hitory",
+      categroy: "History",
     },
     {
       id: 3,
@@ -45,7 +42,6 @@ const HomePage = () => {
 
   return (
     <div className="bg-[#f1f1f1] text-gray-800">
-      {/* ----------------- Hero / Swiper Section ----------------- */}
       <div className="max-h-screen -z-0">
         <Swiper
           spaceBetween={30}
@@ -159,7 +155,6 @@ const HomePage = () => {
         </h1>
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-6 md:px-4">
-            {/* Category Card - Novel */}
             <div className="relative overflow-hidden group rounded-lg shadow-lg h-96 bg-white">
               <img
                 src="https://katemccaffrey.org/wp-content/uploads/2010/08/9781921361982_beautifulmonster.jpg"
@@ -176,7 +171,6 @@ const HomePage = () => {
               </div>
             </div>
 
-            {/* Category Card - Thriller */}
             <div className="relative overflow-hidden group rounded-lg shadow-lg h-96 bg-white">
               <img
                 src="https://romancepremades.com/wp-content/uploads/2024/11/Daniel-Last-Sunset-wf.jpg"
@@ -193,7 +187,6 @@ const HomePage = () => {
               </div>
             </div>
 
-            {/* Category Card - History */}
             <div className="relative overflow-hidden group rounded-lg shadow-lg h-96 bg-white">
               <img
                 src="https://romancepremades.com/wp-content/uploads/2024/11/Kristina-Summer-disc.jpg"
@@ -210,7 +203,6 @@ const HomePage = () => {
               </div>
             </div>
 
-            {/* Category Card - Drama */}
             <div className="relative overflow-hidden group rounded-lg shadow-lg h-96 bg-white">
               <img
                 src="https://romancepremades.com/wp-content/uploads/2024/11/Daniel-never-tell.jpg"
@@ -229,7 +221,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      {/* ----------------- Our Achievements Section ----------------- */}
+
       <div className="py-20 bg-gray-100">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-black uppercase">
@@ -243,7 +235,6 @@ const HomePage = () => {
         <div className="bg-[#0056b3] py-20">
           <div className="container mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-12 text-white">
-              {/* Achievement 1 */}
               <div className="flex flex-col items-center justify-between text-center">
                 <div className="relative">
                   <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white flex items-center justify-center">
@@ -260,7 +251,6 @@ const HomePage = () => {
                 <div className="w-12 mt-2 border-b-2 border-white"></div>
               </div>
 
-              {/* Achievement 2 */}
               <div className="flex flex-col items-center justify-center text-center">
                 <div className="relative">
                   <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white flex items-center justify-center">
@@ -277,7 +267,6 @@ const HomePage = () => {
                 <div className="w-12 mt-2 border-b-2 border-white"></div>
               </div>
 
-              {/* Achievement 3 */}
               <div className="flex flex-col items-center justify-center text-center">
                 <div className="relative">
                   <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white flex items-center justify-center">
@@ -294,7 +283,6 @@ const HomePage = () => {
                 <div className="w-12 mt-2 border-b-2 border-white"></div>
               </div>
 
-              {/* Achievement 4 */}
               <div className="flex flex-col items-center justify-center text-center">
                 <div className="relative">
                   <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white flex items-center justify-center">
@@ -315,7 +303,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* ----------------- Featured Books Section ----------------- */}
       <div className="py-24 bg-white">
         <div className="container mx-auto">
           <h2 className="text-center text-4xl font-bold text-gray-800 mb-12">
@@ -341,7 +328,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* ----------------- Our Testimonials Section ----------------- */}
       <div className="bg-cover bg-center bg-[#0056b3] py-20">
         <div className="container mx-auto text-center px-4">
           <h2 className="text-4xl font-bold text-white mb-4">
@@ -352,7 +338,6 @@ const HomePage = () => {
           </p>
           <div className="border-t-2 border-[#333] w-16 mx-auto my-4"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-            {/* Testimonial 1 */}
             <div className="bg-white rounded-lg shadow-lg p-8 relative">
               <p className="text-[#444] italic mb-6 text-xl">
                 <span className="text-[#0056b3] text-3xl font-bold mr-2">
@@ -376,7 +361,6 @@ const HomePage = () => {
               </div>
             </div>
 
-            {/* Testimonial 2 */}
             <div className="bg-white rounded-lg shadow-lg p-8 relative">
               <p className="text-gray-600 italic mb-6 text-xl">
                 <span className="text-[#0056b3] text-3xl font-bold mr-2">

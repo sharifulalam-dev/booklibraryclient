@@ -1,14 +1,22 @@
 import axios from "axios";
 import { format } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
-import { FaTable, FaThLarge } from "react-icons/fa";
+import {
+  FaArrowAltCircleRight,
+  FaCalendarAlt,
+  FaTable,
+  FaThLarge,
+} from "react-icons/fa";
+import ClipLoader from "react-spinners/ClipLoader";
 import Swal from "sweetalert2";
 import { Authentication } from "./../AuthProvider/AuthProvider";
 axios.defaults.withCredentials = true;
+
 const BorrowedBooks = () => {
   const { user } = useContext(Authentication);
   const [borrowedBooks, setBorrowedBooks] = useState([]);
   const [isCardView, setIsCardView] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const userEmail = user.email;
@@ -64,91 +72,121 @@ const BorrowedBooks = () => {
       </div>
     );
   }
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-gray-100">
+        <ClipLoader size={50} color="#0056b3" />
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10">
-      <div className="flex justify-between items-center max-w-6xl mx-auto mb-6 px-4">
-        <h1 className="text-4xl font-bold text-gray-800">Borrowed Books</h1>
+    <div className="min-h-screen bg-[#f7f7f7] py-10 px-4">
+      <div className="flex justify-between items-center max-w-7xl mx-auto mb-8">
+        <h1 className="text-4xl font-bold text-gray-900">My Borrowed Books</h1>
         <button
           onClick={() => setIsCardView(!isCardView)}
-          className="flex items-center gap-2 bg-blue-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 transition-all"
+          className="flex items-center gap-2 bg-[#f39c12] hover:bg-[#e67e22] text-white py-2.5 px-5 rounded-xl shadow-md transition-all"
         >
           {isCardView ? (
             <>
-              <FaTable /> See Table View
+              <FaTable className="text-lg" /> Table View
             </>
           ) : (
             <>
-              <FaThLarge /> See Card View
+              <FaThLarge className="text-lg" /> Card View
             </>
           )}
         </button>
       </div>
 
       {isCardView ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {borrowedBooks.map((book) => (
             <div
               key={book.bookId}
-              className="bg-white shadow-lg rounded-lg p-4 flex flex-col"
+              className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col transform hover:scale-105"
             >
-              <img
-                src={book.image}
-                alt={book.name}
-                className="w-full h-48 object-cover rounded-md mb-4"
-              />
-              <h3 className="text-xl font-bold text-gray-800">{book.name}</h3>
-              <p className="text-gray-600">Category: {book.category}</p>
-              <p className="text-gray-600">
-                Borrowed On: {format(new Date(book.borrowedAt), "dd-MM-yyyy")}
-              </p>
-              <p className="text-gray-600">
-                Return By: {format(new Date(book.returnDate), "dd-MM-yyyy")}
-              </p>
-              <button
-                onClick={() => handleReturn(book.bookId)}
-                className="mt-auto w-full py-2 px-4 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-all"
-              >
-                Return
-              </button>
+              <div className="relative h-72 overflow-hidden">
+                <img
+                  src={book.image}
+                  alt={book.name}
+                  className="w-full h-full object-cover transform transition-transform duration-300"
+                />
+                <span className="absolute top-3 right-3 bg-[#f39c12]/90 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  {book.category}
+                </span>
+              </div>
+
+              <div className="p-6 flex flex-col flex-grow">
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                  {book.name}
+                </h3>
+
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <FaCalendarAlt className="text-[#f39c12]" />
+                    <span className="text-sm">
+                      Borrowed:{" "}
+                      {format(new Date(book.borrowedAt), "dd MMM yyyy")}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <FaCalendarAlt className="text-[#f39c12]" />
+                    <span className="text-sm">
+                      Return by:{" "}
+                      {format(new Date(book.returnDate), "dd MMM yyyy")}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => handleReturn(book.bookId)}
+                  className="mt-auto w-full py-3 bg-[#f39c12] hover:bg-[#e67e22] text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                  <FaArrowAltCircleRight className="text-white" />
+                  Return Book
+                </button>
+              </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="overflow-x-auto max-w-6xl mx-auto px-4">
-          <table className="table-auto w-full border-collapse border border-gray-200">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border px-4 py-2">Image</th>
-                <th className="border px-4 py-2">Book Name</th>
-                <th className="border px-4 py-2">Category</th>
-                <th className="border px-4 py-2">Borrowed On</th>
-                <th className="border px-4 py-2">Return By</th>
-                <th className="border px-4 py-2">Action</th>
+        <div className="overflow-x-auto max-w-7xl mx-auto">
+          <table className="min-w-full table-auto bg-white rounded-lg shadow-md">
+            <thead className="bg-[#f39c12] text-white">
+              <tr>
+                <th className="py-2 px-4 text-center">Book Image</th>
+                <th className="py-2 px-4 text-center">Book Name</th>
+                <th className="py-2 px-4 text-center">Category</th>
+                <th className="py-2 px-4 text-center">Borrowed On</th>
+                <th className="py-2 px-4 text-center">Return By</th>
+                <th className="py-2 px-4 text-center">Action</th>
               </tr>
             </thead>
             <tbody>
               {borrowedBooks.map((book) => (
-                <tr key={book.bookId}>
-                  <td className="border px-4 py-2">
+                <tr key={book.bookId} className="border-b">
+                  <td className="py-2 px-4 text-center">
                     <img
                       src={book.image}
-                      alt={book.title}
-                      className="w-16 h-16 object-cover rounded"
+                      alt={book.name}
+                      className="w-20 h-20 object-cover rounded-lg mx-auto"
                     />
                   </td>
-                  <td className="border px-4 py-2">{book.name}</td>
-                  <td className="border px-4 py-2">{book.category}</td>
-                  <td className="border px-4 py-2">
-                    {format(new Date(book.borrowedAt), "dd-MM-yyyy")}
+                  <td className="py-2 px-4 text-center">{book.name}</td>
+                  <td className="py-2 px-4 text-center">{book.category}</td>
+                  <td className="py-2 px-4 text-center">
+                    {format(new Date(book.borrowedAt), "dd MMM yyyy")}
                   </td>
-                  <td className="border px-4 py-2">
-                    {format(new Date(book.returnDate), "dd-MM-yyyy")}
+                  <td className="py-2 px-4 text-center">
+                    {format(new Date(book.returnDate), "dd MMM yyyy")}
                   </td>
-                  <td className="border px-4 py-2">
+                  <td className="py-2 px-4 text-center">
                     <button
                       onClick={() => handleReturn(book.bookId)}
-                      className="py-2 px-4 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition-all"
+                      className="py-2 px-4 bg-[#f39c12] text-white rounded-md"
                     >
                       Return
                     </button>

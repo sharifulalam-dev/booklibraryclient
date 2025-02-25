@@ -87,15 +87,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/all-books",
-        element: (
-          <PrivateRoute>
-            <AllBooks />
-          </PrivateRoute>
-        ),
-        loader: () =>
-          fetch("https://booklibraryserver.vercel.app/all-books").then((res) =>
-            res.json()
-          ),
+        element: <AllBooks />,
       },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },

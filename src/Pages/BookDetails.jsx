@@ -15,6 +15,8 @@ const BookDetails = () => {
   const [book, setBook] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [similarBooks, setSimilarBooks] = useState([]);
+  const [loadingSimilar, setLoadingSimilar] = useState(false);
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -36,12 +38,31 @@ const BookDetails = () => {
     fetchBookDetails();
   }, [id]);
 
+  useEffect(() => {
+    if (book) {
+      setLoadingSimilar(true);
+      axios
+        .get(`https://booklibraryserver.vercel.app/books?cat=${book.category}`)
+        .then(({ data }) => {
+          const filtered = data.filter((b) => b._id !== book._id);
+          setSimilarBooks(filtered);
+        })
+        .catch((error) => {
+          console.error("Error fetching similar books:", error);
+        })
+        .finally(() => {
+          setLoadingSimilar(false);
+        });
+    }
+  }, [book]);
+
   const handleBorrow = async () => {
     if (!returnDate) {
       Swal.fire({
         icon: "error",
-        title: "Error",
+        title: "Oops...",
         text: "Please select a return date!",
+        confirmButtonColor: "#f39c12",
       });
       return;
     }
@@ -49,8 +70,9 @@ const BookDetails = () => {
     if (book.quantity <= 0) {
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: "Book is out of stock!",
+        title: "Unavailable",
+        text: "This book is currently out of stock!",
+        confirmButtonColor: "#f39c12",
       });
       return;
     }
@@ -63,27 +85,25 @@ const BookDetails = () => {
       });
 
       setBook((prev) => ({ ...prev, quantity: prev.quantity - 1 }));
-
       setIsModalOpen(false);
 
       Swal.fire({
         icon: "success",
-        title: "Borrowed",
-        text: `You have borrowed "${book.name}"!`,
+        title: "Success!",
+        text: `Enjoy reading "${book.name}"!`,
+        confirmButtonColor: "#f39c12",
       }).then(() => {
         navigate("/borrowedbooks");
       });
     } catch (error) {
       console.error("Error borrowing book:", error);
-
       setIsModalOpen(false);
 
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: error?.response?.data?.message
-          ? error.response.data.message
-          : "Failed To Borrow",
+        text: error?.response?.data?.message || "Failed to borrow book",
+        confirmButtonColor: "#f39c12",
       });
     }
   };
@@ -91,104 +111,203 @@ const BookDetails = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  if (!book) return <span className="loading loading-ring loading-lg"></span>;
+  if (!book)
+    return (
+      <div className="min-h-screen bg-[#f7f7f7] flex items-center justify-center">
+        <span className="loading loading-spinner text-[#f39c12] w-16 h-16"></span>
+      </div>
+    );
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10">
-      <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <img
-            src={book.image}
-            alt={book.name}
-            className="w-full h-80 object-contain rounded-md mb-4"
-          />
-        </div>
+    <div className="min-h-screen max-w-screen-2xl mx-auto   py-12 px-4 sm:px-6 lg:px-4">
 
-        <div>
-          <h1 className="text-4xl font-bold text-gray-800">{book.name}</h1>
-          <p className="text-gray-600 mt-2">Author: {book.author}</p>
-          <p className="text-gray-600">Category: {book.category}</p>
-          <p className="text-gray-600">Quantity: {book.quantity}</p>
-          <p className="text-gray-600 mb-4">Description: {book.description}</p>
-
-          <div className="mb-4">
-            <ReactStars
-              count={5}
-              size={24}
-              value={book.rating || 0}
-              edit={false}
-              isHalf={true}
-              activeColor="#ffd700"
+      <div className="w-full bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+    
+          <div className="flex items-center justify-center bg-gray-50 p-8 rounded-xl">
+            <img
+              src={book.image}
+              alt={book.name}
+              className="max-h-96 w-full object-contain transform hover:scale-105 transition-transform duration-300"
             />
           </div>
 
-          <button
-            onClick={openModal}
-            disabled={book.quantity <= 0}
-            className={`w-full py-2 px-4 font-semibold rounded-lg shadow-md ${
-              book.quantity > 0
-                ? "bg-blue-500 text-white hover:bg-blue-600"
-                : "bg-gray-400 text-gray-800 cursor-not-allowed"
-            }`}
-          >
-            {book.quantity > 0 ? "Borrow" : "Out of Stock"}
-          </button>
+ 
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                {book.name}
+              </h1>
+              <p className="text-xl font-medium text-[#f39c12]">
+                {book.author}
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <span className="bg-[#f39c12]/10 text-[#f39c12] px-3 py-1 rounded-full text-sm font-medium">
+                  {book.category}
+                </span>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    book.quantity > 0
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {book.quantity > 0
+                    ? `${book.quantity} Available`
+                    : "Out of Stock"}
+                </span>
+              </div>
+
+              <ReactStars
+                count={5}
+                size={28}
+                value={book.rating || 0}
+                edit={false}
+                isHalf={true}
+                activeColor="#f39c12"
+                className="mt-2"
+              />
+            </div>
+
+            <p className="text-gray-600 leading-relaxed text-lg">
+              {book.description}
+            </p>
+
+            <button
+              onClick={openModal}
+              disabled={book.quantity <= 0}
+              className={`w-full py-4 text-lg font-semibold rounded-xl transition-all ${
+                book.quantity > 0
+                  ? "bg-[#f39c12] hover:bg-[#e67e22] text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              {book.quantity > 0 ? "Borrow Now" : "Currently Unavailable"}
+            </button>
+          </div>
         </div>
       </div>
 
+      <div className="w-full  mt-12">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">
+          More {book.category} Books
+        </h2>
+        {loadingSimilar ? (
+          <div className="flex justify-center items-center py-8">
+            <span className="loading loading-spinner text-[#f39c12] w-12 h-12"></span>
+          </div>
+        ) : similarBooks.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {similarBooks.map((sBook) => (
+              <div
+                key={sBook._id}
+                className="border rounded-lg shadow-lg p-4 flex flex-col h-[550px] justify-between bg-white"
+              >
+                <img
+                  src={sBook.image}
+                  alt={sBook.name}
+                  className="h-48 w-full object-cover mb-4 rounded"
+                />
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2 min-h-[64px] flex items-center px-2">
+                    {sBook.name}
+                  </h3>
+                  <div className="space-y-2 mb-4">
+                    <p className="text-gray-600">
+                      <span className="font-semibold text-[#f39c12]">
+                        Author:
+                      </span>{" "}
+                      {sBook.author}
+                    </p>
+                    <p className="text-gray-600">
+                      <span className="font-semibold text-[#f39c12]">
+                        Rating:
+                      </span>{" "}
+                      {sBook.rating}/5
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => navigate(`/book-details/${sBook._id}`)}
+                  className="mt-auto w-full py-3 px-6 bg-[#f39c12] hover:bg-[#e67e22] text-white font-bold rounded-lg shadow-xl transition-colors"
+                >
+                  See More
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-600 text-lg text-center">
+            No similar books available.
+          </p>
+        )}
+      </div>
+
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
-              Borrow Book
-            </h2>
-            <div className="flex items-center mb-4">
-              <label className="block text-sm font-medium text-gray-700 mr-4 w-1/3">
-                Return Date
-              </label>
-              <DatePicker
-                selected={returnDate}
-                onChange={(date) => setReturnDate(date)}
-                dateFormat="dd-MM-yyyy"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholderText="Select a return date"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Name
-              </label>
-              <input
-                type="text"
-                value={user.displayName}
-                disabled
-                className="w-full border border-gray-300 rounded-md px-3 py-2"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <input
-                type="email"
-                value={user.email}
-                disabled
-                className="w-full border border-gray-300 rounded-md px-3 py-2"
-              />
-            </div>
-            <div className="flex justify-end">
-              <button
-                onClick={closeModal}
-                className="py-2 px-4 bg-gray-400 text-white rounded-md mr-2"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleBorrow}
-                className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-              >
-                Borrow
-              </button>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+            <div className="p-6">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                Confirm Borrow
+              </h3>
+
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 mb-1">
+                    Return Date
+                  </label>
+                  <DatePicker
+                    selected={returnDate}
+                    onChange={setReturnDate}
+                    minDate={new Date()}
+                    dateFormat="dd MMM yyyy"
+                    className="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-[#f39c12] focus:ring-[#f39c12]"
+                    placeholderText="Select return date"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 mb-1">
+                    Borrower Name
+                  </label>
+                  <input
+                    type="text"
+                    value={user.displayName}
+                    disabled
+                    className="w-full p-3 bg-gray-50 rounded-lg text-gray-700"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-500 mb-1">
+                    Borrower Email
+                  </label>
+                  <input
+                    type="email"
+                    value={user.email}
+                    disabled
+                    className="w-full p-3 bg-gray-50 rounded-lg text-gray-700"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-8 flex justify-end space-x-3">
+                <button
+                  onClick={closeModal}
+                  className="px-6 py-2.5 text-gray-600 hover:text-gray-800 font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleBorrow}
+                  className="px-6 py-2.5 bg-[#f39c12] hover:bg-[#e67e22] text-white font-medium rounded-lg transition-colors"
+                >
+                  Confirm
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -5,7 +5,6 @@ const Footer = () => {
   return (
     <footer className="py-10 text-gray-800 bg-[#f7f7f7]">
       <div className="container mx-auto flex flex-col md:flex-row justify-between px-4 space-y-4 md:space-y-0">
-        {/* Book Library Info */}
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Book Library</h1>
           <p className="mt-2 text-sm">
@@ -14,7 +13,7 @@ const Footer = () => {
             <br /> empower minds and inspire dreams.
           </p>
         </div>
-        {/* Contact Us */}
+
         <div>
           <h2 className="text-xl font-semibold text-gray-900">Contact Us</h2>
           <ul className="mt-2 space-y-1">
@@ -33,7 +32,7 @@ const Footer = () => {
             <li>Address: Dhaka, Bangladesh</li>
           </ul>
         </div>
-        {/* Follow Us */}
+
         <div>
           <h2 className="text-xl font-semibold text-gray-900">Follow Us</h2>
           <div className="flex mt-3 space-x-4">
@@ -66,7 +65,7 @@ const Footer = () => {
             </a>
           </div>
         </div>
-        {/* Links Section */}
+
         <div>
           <h2 className="text-xl font-semibold text-gray-900">Links</h2>
           <ul className="mt-2 space-y-1">
